@@ -128,29 +128,17 @@ class Comparison extends React.Component<any> {
     hasBetterRating(left: number, right: number) {
         return this.isHigher(left, right);
     }
-    fencerPastRecord(fencer: Fencer, other: Fecner, pastFights: Array<Fight>): string {
-        let fencerWins: number = 0;
-        let fencerLosses: number = 0;
-        let draws: number = 0;
-        pastFights.map((fight: Fight) => {
-            if (fight.resultForFighter1 === FightResult.Win) {
-                if (fight.fighter1 === fencer.name) {
-                    fencerWins += 1;
-                } else {
-                    fencerLosses += 1;
-                }
-            } else if (fight.resultForFighter1 === FightResult.Loss) {
-                if (fight.fighter1 === fencer.name) {
-                    fencerLosses += 1;
-                } else {
-                    fencerWins += 1;
-                }
-            } else {
-                draws += 1;
-            }
-            return 0;
-        });
-        return fencerWins + "-" + fencerLosses + "-" + draws;
+    hasBetterOpponentStatistic(left: Fencer) {
+        if (left.opponentStatistic) {
+            return this.isHigher(left.opponentStatistic.wins, left.opponentStatistic.losses)
+        }
+        return BetterSide.Equal
+    }
+    fencerPastRecord(fencer: Fencer): string {
+        if (fencer.opponentStatistic) {
+            return fencer.opponentStatistic.wins + "-" + fencer.opponentStatistic.losses + "-" + fencer.opponentStatistic.draws;
+        }
+        return ""
     }
     render() {
         const fencer: Fencer = this.props.fencer;
@@ -181,9 +169,9 @@ class Comparison extends React.Component<any> {
                     betterSide={this.hasBetterRating(fencer.rating, other.rating)}
                 />
                 <Line label="Past fights"
-                    left={this.fencerPastRecord(fencer, other, fencerFightHistory)} right={this.fencerPastRecord(other, fencer, fencerFightHistory)}
+                    left={this.fencerPastRecord(fencer)} right={this.fencerPastRecord(other)}
                     highlight={this.state.showHighlight}
-                    betterSide={BetterSide.Equal}
+                    betterSide={this.hasBetterOpponentStatistic(fencer)}
                 />
             </div >
         );

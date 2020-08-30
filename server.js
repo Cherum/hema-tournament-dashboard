@@ -32,7 +32,7 @@ app.get('/fightername/:fighter', (req, res) => {
 });
 
 app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
-  const opponentName = req.params.opponentname
+  const opponentName = req.params.opponent
   const fighterId = req.params.fighter
   console.log("get fighter", fighterId, opponentName)
   const url = 'https://hemaratings.com/fighters/details/' + fighterId + '/';
@@ -75,6 +75,9 @@ app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
       const rank = parseInt(ratingsTable.siblings()[0].children[0].data);
       const rating = parseFloat(ratingsTable.siblings()[1].children[0].data);
 
+      let foughtAgainst = { wins: 0, losses: 0, draws: 0 }
+      let lastFoughtAgainstAdded = true
+
       let lastTournaments = new Map()
       let currentTournament = "";
       let tournamentCounter = 0;
@@ -86,17 +89,29 @@ app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
           if (text) {
             if (text.substr(text.length - 1, text.length - 1) === ")" && text !== currentTournament) {
               tournamentCounter++;
-              if (tournamentCounter >= 11) {
-                return false; // break .each loop
-              }
               currentTournament = text;
               lastTournaments[currentTournament] = { name: currentTournament, wins: 0, losses: 0, draws: 0 }
             } else if (text === "WIN") {
               lastTournaments[currentTournament].wins += 1;
+              if (!lastFoughtAgainstAdded) {
+                foughtAgainst.wins += 1;
+                lastFoughtAgainstAdded = true;
+              }
             } else if (text === "LOSS") {
               lastTournaments[currentTournament].losses += 1;
+              if (!lastFoughtAgainstAdded) {
+                foughtAgainst.losses += 1;
+                lastFoughtAgainstAdded = true;
+              }
             } else if (text === "DRAW") {
               lastTournaments[currentTournament].draws += 1;
+              if (!lastFoughtAgainstAdded) {
+                foughtAgainst.draws += 1;
+                lastFoughtAgainstAdded = true;
+              }
+            } else if (text === opponentName) {
+              console.log("opponent match found")
+              lastFoughtAgainstAdded = false;
             }
           }
         });
@@ -112,9 +127,10 @@ app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
         wins: wins,
         losses: losses,
         draws: draws,
-        tournaments: Object.values(lastTournaments)
+        tournaments: Object.values(lastTournaments),
+        opponentStatistic: foughtAgainst
       }
-      // console.log("fencer", fencer)
+      console.log("fencer", fencer)
 
       res.send(JSON.stringify(fencer, null, 2))
     })

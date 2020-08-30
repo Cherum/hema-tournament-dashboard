@@ -37,11 +37,11 @@ class App extends React.Component<IProps, IState> {
   }
   state = {
     fighter1Id: 10,
-    fighter2Id: 1314,
+    fighter2Id: 5,
     fighter1: {},
     fighter2: {},
     fighter1Name: "Dennis Ljungqvist",
-    fighter2Name: "Martin Fabian"
+    fighter2Name: "Kristian Ruokonen"
   }
 
   componentDidMount() {
@@ -60,6 +60,7 @@ class App extends React.Component<IProps, IState> {
   }
 
   fetchUsers = async (fighterId: number, opponentName: string) => {
+    console.log("fetchUsers", fighterId, opponentName)
     const response = await fetch('/fighter/' + fighterId + "/opponentname/" + opponentName);
     const body = await response.json();
     if (response.status !== 200) throw Error(body.message);
@@ -78,7 +79,8 @@ class App extends React.Component<IProps, IState> {
       losses: res.losses,
       draws: res.draws,
       pastEvents: res.tournaments,
-      userid: res.userid
+      userid: res.userid,
+      opponentStatistic: res.opponentStatistic
     }
     return fighter;
   }
