@@ -4,12 +4,19 @@ import { Fencer, Club, HemaEvent, Fight, FightResult } from './types'
 import { fencer1Club, fencer2Club, fencerFightHistory } from './data';
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
+import Link from '@material-ui/core/Link';
+
+enum BetterSide {
+    Left,
+    Right,
+    Equal
+}
 
 function Line(props: any) {
-    const isLeftBetter: boolean = props.betterSide == BetterSide.Left;
-    const isRightBetter: boolean = props.betterSide == BetterSide.Right;
+    const isLeftBetter: boolean = props.betterSide === BetterSide.Left;
+    const isRightBetter: boolean = props.betterSide === BetterSide.Right;
 
-    const doHighlight: boolean = !props.highlight || props.betterSide == BetterSide.Equal;
+    const doHighlight: boolean = !props.highlight || props.betterSide === BetterSide.Equal;
     const leftBgColor: string = doHighlight ? "inherit" : isLeftBetter ? "green" : "red";
     const rightBgColor: string = doHighlight ? "inherit" : isRightBetter ? "green" : "red";
 
@@ -41,7 +48,7 @@ function HeaderLine(props: any) {
         <Grid container spacing="2">
             <Grid item xs={5} align="right">
                 <Typography variant="h3">
-                    <a href={fencerUrl}>{props.left.name}</a>
+                    <Link href={fencerUrl} target="_blank" rel="noopener">{props.left.name}</Link>
                 </Typography>
             </Grid>
             <Grid item xs={2}>
@@ -51,17 +58,11 @@ function HeaderLine(props: any) {
             </Grid>
             <Grid item xs={5} align="left">
                 <Typography variant="h3">
-                    <a href={otherUrl}>{props.right.name}</a>
+                    <Link href={otherUrl} target="_blank" rel="noopener">{props.right.name}</Link>
                 </Typography>
             </Grid>
         </Grid>
     )
-}
-
-enum BetterSide {
-    Left,
-    Right,
-    Equal
 }
 class Comparison extends React.Component<any> {
     constructor(props) {
@@ -110,14 +111,14 @@ class Comparison extends React.Component<any> {
         let fencerLosses: number = 0;
         let draws: number = 0;
         pastFights.map((fight: Fight) => {
-            if (fight.resultForFighter1 == FightResult.Win) {
-                if (fight.fighter1 == fencer.name) {
+            if (fight.resultForFighter1 === FightResult.Win) {
+                if (fight.fighter1 === fencer.name) {
                     fencerWins += 1;
                 } else {
                     fencerLosses += 1;
                 }
-            } else if (fight.resultForFighter1 == FightResult.Loss) {
-                if (fight.fighter1 == fencer.name) {
+            } else if (fight.resultForFighter1 === FightResult.Loss) {
+                if (fight.fighter1 === fencer.name) {
                     fencerLosses += 1;
                 } else {
                     fencerWins += 1;
@@ -125,6 +126,7 @@ class Comparison extends React.Component<any> {
             } else {
                 draws += 1;
             }
+            return 0;
         });
         return fencerWins + "-" + fencerLosses + "-" + draws;
     }
@@ -135,7 +137,7 @@ class Comparison extends React.Component<any> {
         return (
             <div>
                 <HeaderLine left={fencer} right={other} />
-                <Line left={fencer1Club.name + " " + fencer1Club.city} right={fencer2Club.name + " " + fencer2Club.city} label="Club" />
+                <Line left={fencer.clubName} right={other.clubName} label="Club" />
                 <Line left={fencer.nationality} right={other.nationality} label="Country" />
                 <Line left={this.recordString(fencer)} right={this.recordString(other)} label="Record" />
                 <Line

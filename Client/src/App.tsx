@@ -3,12 +3,13 @@ import './App.css';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FencerPart from './FencerPart'
-import { Fencer, Club, HemaEvent } from './types'
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import { fencer1, fencer2, fencer1Club, fencer2Club, fencer1Events, fencer2Events, fencerFightHistory } from './data'
 import Comparison from './Comparison'
-import { Button, Toolbar } from '@material-ui/core';
+import { Button, Toolbar, TextField } from '@material-ui/core';
+import { Fencer } from './types';
+import { timingSafeEqual } from 'crypto';
 
 const styles = {
   root: {
@@ -17,7 +18,78 @@ const styles = {
   }
 };
 
-class App extends React.Component<any> {
+interface IProps {
+}
+
+interface IState {
+  fighter1Id: number,
+  fighter2Id: number,
+  fighter1?: Fencer,
+  fighter2?: Fencer
+}
+
+class App extends React.Component<IProps, IState> {
+  constructor(props) {
+    super(props);
+  }
+  state = {
+    fighter1Id: 10,
+    fighter2Id: 1314,
+    fighter1: {},
+    fighter2: {}
+  }
+
+  componentDidMount() {
+    this.refreshNames()
+  }
+
+  fetchUsers = async (fighterId: number) => {
+    const response = await fetch('/fighter/' + fighterId);
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
+  refreshNames() {
+    console.log("refreshNames")
+    this.fetchUsers(this.state.fighter1Id)
+      .then(res => {
+        const fighter: Fencer = {
+          name: res.name,
+          nationality: res.nationality,
+          clubName: res.clubName,
+          rank: res.rank,
+          rating: res.rating,
+          wins: res.wins,
+          losses: res.losses,
+          draws: res.draws
+        }
+        this.setState({
+          fighter1: fighter
+        })
+        console.log("finished setting fighter 1", fighter)
+      })
+      .catch(err => console.warn(err));
+
+    this.fetchUsers(this.state.fighter2Id)
+      .then(res => {  // TODO remove duplication
+        const fighter: Fencer = {
+          name: res.name,
+          nationality: res.nationality,
+          clubName: res.clubName,
+          rank: res.rank,
+          rating: res.rating,
+          wins: res.wins,
+          losses: res.losses,
+          draws: res.draws
+        }
+        this.setState({
+          fighter2: fighter
+        })
+        console.log("finished setting fighter 2", fighter)
+      })
+      .catch(err => console.warn(err));
+  }
 
   render() {
     const { classes } = this.props;
@@ -31,8 +103,25 @@ class App extends React.Component<any> {
             <Button>Highlight</Button>
           </Toolbar>
         </AppBar>
-        <div>.</div>
-        <Comparison fencer={fencer1} otherFencer={fencer2} />
+        <Grid container spacing="2">
+          <Grid item xs={2}>
+
+          </Grid>
+          <Grid item xs={3} align="right">
+            <TextField label="First fencer ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" required autoFocus fullWidth />
+          </Grid>
+          <Grid item xs={2}>
+
+          </Grid>
+          <Grid item xs={3} align="left">
+            <TextField label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" required fullWidth />
+          </Grid>
+          <Grid item xs={2}>
+
+          </Grid>
+        </Grid>
+
+        <Comparison fencer={this.state.fighter1} otherFencer={this.state.fighter2} />
 
         <Grid container className={classes.root}>
           <Grid item xs={6}>

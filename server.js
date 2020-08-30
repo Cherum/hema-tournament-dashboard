@@ -1,20 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { Sequelize, Model, DataTypes } = require('sequelize');
 const path = require('path');
-
-let sequelize;
-if (process.env.NODE_ENV !== 'production') {
-  sequelize = new Sequelize('postgres://admin:secret@localhost:5432/postgres')
-} else {
-  sequelize = new Sequelize(process.env.DATABASE_URL)
-}
-
-sequelize.authenticate().then(() => {
-  console.log('Connection has been established successfully.');
-}).catch(error => {
-  console.error('Unable to connect to the database:', error);
-})
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -25,100 +11,69 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-class Club extends Model { }
-Club.init({
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isAlphanumeric: true,
-      notEmpty: true
-    }
-  },
-  city: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isAlpha: true,
-      notEmpty: true
-    }
-  },
-  street: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isAlphanumeric: true,
-      notEmpty: true
-    }
-  },
-  county: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isAlphanumeric: true,
-      notEmpty: true
-    }
-  },
-  website: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true,
-    validate: {
-      isAlphanumeric: true,
-      notEmpty: true
-    }
-  },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      notEmpty: true
-    }
-  }
-}, { sequelize, modelName: 'club' });
-sequelize.sync();
+const rp = require('request-promise');
+const $ = require('cheerio');
+const { count } = require('console');
 
-app.get('/clubs', (req, res) => {
-  Club.findAll()
-    .then(clubs => {
-      res.send(JSON.stringify(clubs, null, 2))
+app.get('/fighter/:fighter', (req, res) => {
+  const fighterId = req.params.fighter
+  console.log("get fighter", fighterId)
+  const url = 'https://hemaratings.com/fighters/details/' + fighterId + '/';
+
+  rp(url)
+    .then(function (html) {
+      //success!    
+      console.log("~~~~~~~~~~~~~~~~~~~~~~")
+      const fighterName = $('article > h2', html).text();
+      const clubName = $('dd > a', html).text();
+      const clubUrl = $('dd > a', html)[0].attribs.href;
+      const country = $('dd > .flag-icon', html)[0].attribs.title;
+      console.log("fighter/club info", fighterName, clubName, clubUrl, country)
+
+      let totalFights = 0;
+      let wins = 0;
+      let losses = 0;
+      let draws = 0;
+      {
+        const recordsTable = $('h3:contains("Record")', html).parent().find('td:contains("Mixed Steel Longsword")');
+        totalFights += parseInt(recordsTable.siblings()[0].children[0].data);
+        wins += parseInt(recordsTable.siblings()[1].children[0].data);
+        losses += parseInt(recordsTable.siblings()[2].children[0].data);
+        draws += parseInt(recordsTable.siblings()[3].children[0].data);
+      }
+
+      {
+        const recordsTable = $('h3:contains("Record")', html).parent().find('td:contains("Men\'s Steel Longsword")');
+        totalFights += parseInt(recordsTable.siblings()[0].children[0].data);
+        wins += parseInt(recordsTable.siblings()[1].children[0].data);
+        losses += parseInt(recordsTable.siblings()[2].children[0].data);
+        draws += parseInt(recordsTable.siblings()[3].children[0].data);
+      }
+      console.log("fights", totalFights, wins, losses, draws)
+
+      const ratingsTable = $('h3:contains("Current ratings")', html).parent().find('td:contains("Longsword")');
+      const rank = parseInt(ratingsTable.siblings()[0].children[0].data);
+      const rating = parseFloat(ratingsTable.siblings()[1].children[0].data);
+      console.log("ranking/rating", rank, rating)
+
+      const fencer = {
+        name: fighterName,
+        nationality: country,
+        clubName: clubName,
+        rank: rank,
+        rating: rating,
+        wins: wins,
+        losses: losses,
+        draws: draws,
+      }
+      console.log("fencer", fencer)
+
+      res.send(JSON.stringify(fencer, null, 2))
     })
-    .catch(error => {
-      console.warn(error);
-      res.send(false)
-    })
-});
-
-app.post('/club', (req, res) => {
-  // const firstName = req.body.firstName;
-  // const lastName = req.body.lastName;
-
-  // User.create({ firstName: firstName, lastName: lastName })
-  // .then(() => {
-  //   res.send(true)
-  // })
-  // .catch(error => {
-  //   console.warn(error);
-  //   res.send(false)
-  // })
-});
-
-app.delete('/club', (req, res) => {
-  // const firstName = req.body.firstName;
-  // const lastName = req.body.lastName;
-
-  // User.destroy({
-  //   where: {
-  //     firstName: firstName,
-  //     lastName: lastName
-  //   }
-  // })
-  // .then(() => {
-  //   res.send(true)
-  // })
-  // .catch(error => {
-  //   console.warn(error);
-  //   res.send(false)
-  // })
+    .catch(function (err) {
+      //handle error
+      console.error(err)
+    });
 });
 
 app.get('*', (req, res) => {
@@ -126,3 +81,4 @@ app.get('*', (req, res) => {
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+

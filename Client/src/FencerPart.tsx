@@ -1,5 +1,4 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Fencer, Club, HemaEvent, Fight, FightResult } from './types'
 import Card from '@material-ui/core/Card';
@@ -7,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { withStyles } from '@material-ui/core/styles';
-import { fileURLToPath } from 'url';
+import Link from '@material-ui/core/Link';
 
 const styles = {
     root: {
@@ -30,7 +29,6 @@ class FencerPart extends React.Component<any> {
     render() {
         const { classes } = this.props;
         const fencer: Fencer = this.props.fencer;
-        const otherFencer: Fencer = this.props.otherFencer;
         const club: Club = this.props.club;
         const events: Array<HemaEvent> = this.props.events;
         const fightHistory: Array<Fight> = this.props.fightHistory;
@@ -41,7 +39,7 @@ class FencerPart extends React.Component<any> {
                 <Card className={classes.root} raised>
                     <CardContent>
                         <Typography variant="h5" component="h3">
-                            <a href={clubUrl}>{club.name}</a>
+                            <Link href={clubUrl} target="_blank" rel="noopener">{club.name}</Link>
                         </Typography>
                         <List>
                             <ListItem>
@@ -51,10 +49,10 @@ class FencerPart extends React.Component<any> {
                                 Fighters: {club.fighterCount}
                             </ListItem>
                             <ListItem>
-                                Website: <a href={club.website}>{club.website}</a>
+                                Website: <Link href={club.website} target="_blank" rel="noopener">{club.website}</Link>
                             </ListItem>
                             <ListItem>
-                                Facebook: <a href={club.facebook}>{club.facebook}</a>
+                                Facebook: <Link href={club.facebook} target="_blank" rel="noopener">{club.facebook}</Link>
                             </ListItem>
                         </List>
                     </CardContent>
@@ -66,10 +64,10 @@ class FencerPart extends React.Component<any> {
                         </Typography>
                         <List>
                             {fightHistory.map((fight: Fight) => {
-                                const fightResult = fight.fighter1 == fencer.name ? fight.resultForFighter1 : fight.resultForFighter2;
+                                const fightResult = fight.fighter1 === fencer.name ? fight.resultForFighter1 : fight.resultForFighter2;
                                 return (
                                     <ListItem>
-                                        <Typography color={fightResult == FightResult.Win ? "primary" : "error"}>
+                                        <Typography color={fightResult === FightResult.Win ? "primary" : "error"}>
                                             {fight.eventName} {fightResult}
                                         </Typography>
                                     </ListItem>
