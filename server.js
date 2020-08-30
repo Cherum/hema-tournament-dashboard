@@ -15,9 +15,26 @@ const rp = require('request-promise');
 const $ = require('cheerio');
 const { count } = require('console');
 
-app.get('/fighter/:fighter', (req, res) => {
+app.get('/fightername/:fighter', (req, res) => {
   const fighterId = req.params.fighter
-  console.log("get fighter", fighterId)
+  console.log("get fighter name", fighterId)
+  const url = 'https://hemaratings.com/fighters/details/' + fighterId + '/';
+
+  rp(url)
+    .then(function (html) {
+      const fighterName = $('article > h2', html).text();
+      res.send(JSON.stringify(fighterName, null, 2))
+    })
+    .catch(function (err) {
+      //handle error
+      console.error(err)
+    });
+});
+
+app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
+  const opponentName = req.params.opponentname
+  const fighterId = req.params.fighter
+  console.log("get fighter", fighterId, opponentName)
   const url = 'https://hemaratings.com/fighters/details/' + fighterId + '/';
 
   rp(url)
@@ -65,7 +82,7 @@ app.get('/fighter/:fighter', (req, res) => {
         .parent().find('td:contains("Steel Longsword")', html)
         .siblings()
         .each(function (i, elm) {
-          const text = $(this).text().trim();
+          const text = $(elm).text().trim();
           if (text) {
             if (text.substr(text.length - 1, text.length - 1) === ")" && text !== currentTournament) {
               tournamentCounter++;
@@ -97,7 +114,7 @@ app.get('/fighter/:fighter', (req, res) => {
         draws: draws,
         tournaments: Object.values(lastTournaments)
       }
-      console.log("fencer", fencer)
+      // console.log("fencer", fencer)
 
       res.send(JSON.stringify(fencer, null, 2))
     })
@@ -105,14 +122,6 @@ app.get('/fighter/:fighter', (req, res) => {
       //handle error
       console.error(err)
     });
-});
-
-app.get('/club/:club', (req, res) => {
-  const clubId = req.params.club
-  const url = "https://hemaratings.com/clubs/details/" + clubId + "/"
-  console.log("get club", url)
-
-  res.send(JSON.stringify(url, null, 2))
 });
 
 app.get('*', (req, res) => {

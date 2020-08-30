@@ -31,31 +31,9 @@ class FencerPart extends React.Component<any> {
         const club: Club = this.props.club;
         const events: Any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
         const fightHistory: Array<Fight> = this.props.fightHistory;
-        const clubUrl: string = "https://hemaratings.com/clubs/details/" + club.clubid;
 
         return (
             <div>
-                <Card className={classes.root} raised>
-                    <CardContent>
-                        <Typography variant="h5" component="h3">
-                            <Link href={clubUrl} target="_blank" rel="noopener">{club.name}</Link>
-                        </Typography>
-                        <List>
-                            <ListItem>
-                                City: {club.city}
-                            </ListItem>
-                            <ListItem>
-                                Fighters: {club.fighterCount}
-                            </ListItem>
-                            <ListItem>
-                                Website: <Link href={club.website} target="_blank" rel="noopener">{club.website}</Link>
-                            </ListItem>
-                            <ListItem>
-                                Facebook: <Link href={club.facebook} target="_blank" rel="noopener">{club.facebook}</Link>
-                            </ListItem>
-                        </List>
-                    </CardContent>
-                </Card>
                 <Card raised>
                     <CardContent>
                         <Typography variant="h5" component="h3">

@@ -33,7 +33,7 @@ function Line(props: any) {
     if (props.rightLink) {
         rightLink = <Link href={props.rightLink} target="_blank" rel="noopener">{props.right}</Link>;
     } else {
-        rightLink = props.left;
+        rightLink = props.right;
     }
 
     return (

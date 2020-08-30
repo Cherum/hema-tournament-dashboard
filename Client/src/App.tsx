@@ -25,7 +25,9 @@ interface IState {
   fighter1Id: number,
   fighter2Id: number,
   fighter1?: Fencer,
-  fighter2?: Fencer
+  fighter2?: Fencer,
+  fighter1Name?: "",
+  fighter2Name?: ""
 }
 
 class App extends React.Component<IProps, IState> {
@@ -37,15 +39,28 @@ class App extends React.Component<IProps, IState> {
     fighter1Id: 10,
     fighter2Id: 1314,
     fighter1: {},
-    fighter2: {}
+    fighter2: {},
+    fighter1Name: "Dennis Ljungqvist",
+    fighter2Name: "Martin Fabian"
   }
 
   componentDidMount() {
     this.refreshNames()
   }
 
-  fetchUsers = async (fighterId: number) => {
-    const response = await fetch('/fighter/' + fighterId);
+  refreshFighterName = async (fighterId: number, isFighter1: boolean) => {
+    const response = await fetch('/fightername/' + fighterId);
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+    if (isFighter1) {
+      this.setState({ fighter1Name: body })
+    } else {
+      this.setState({ fighter2Name: body })
+    }
+  }
+
+  fetchUsers = async (fighterId: number, opponentName: string) => {
+    const response = await fetch('/fighter/' + fighterId + "/opponentname/" + opponentName);
     const body = await response.json();
     if (response.status !== 200) throw Error(body.message);
 
@@ -69,7 +84,7 @@ class App extends React.Component<IProps, IState> {
   }
   refreshNames() {
     console.log("refreshNames", this.state.fighter1Id, this.state.fighter2Id)
-    this.fetchUsers(this.state.fighter1Id)
+    this.fetchUsers(this.state.fighter1Id, this.state.fighter2Name)
       .then(res => {
         this.setState({
           fighter1: this.convertResultToFencer(res)
@@ -78,7 +93,7 @@ class App extends React.Component<IProps, IState> {
       })
       .catch(err => console.warn(err));
 
-    this.fetchUsers(this.state.fighter2Id)
+    this.fetchUsers(this.state.fighter2Id, this.state.fighter1Name)
       .then(res => {
         this.setState({
           fighter2: this.convertResultToFencer(res)
@@ -107,26 +122,34 @@ class App extends React.Component<IProps, IState> {
         </AppBar>
         <Grid container spacing="2">
           <Grid item xs={2}>
-
           </Grid>
           <Grid item xs={3} align="right">
+            ID belongs to {this.state.fighter1Name}
             <TextField
               label="First fencer ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" defaultValue="10"
               required autoFocus fullWidth
-              onChange={(event: object) => this.setState({ fighter1Id: event.target.value })}
+              onChange={(event: object) => {
+                this.setState({
+                  fighter1Id: event.target.value
+                })
+                this.refreshFighterName(event.target.value, true)
+              }}
             />
           </Grid>
           <Grid item xs={2}>
             <Button variant="contained" color="primary" onClick={this.startSearch}>Search</Button>
           </Grid>
           <Grid item xs={3} align="left">
+            ID belongs to {this.state.fighter2Name}
             <TextField
               label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" defaultValue="1314"
               required fullWidth
-              onChange={(event: object) => this.setState({ fighter2Id: event.target.value })} />
+              onChange={(event: object) => {
+                this.setState({ fighter2Id: event.target.value })
+                this.refreshFighterName(event.target.value, false)
+              }} />
           </Grid>
           <Grid item xs={2}>
-
           </Grid>
         </Grid>
 
@@ -134,10 +157,10 @@ class App extends React.Component<IProps, IState> {
 
         <Grid container className={classes.root}>
           <Grid item xs={6}>
-            <FencerPart fencer={this.state.fighter1} otherFencer={this.state.fighter2} club={fencer1Club} fightHistory={fencerFightHistory} isLeft />
+            <FencerPart fencer={this.state.fighter1} otherFencer={this.state.fighter2} fightHistory={fencerFightHistory} isLeft />
           </Grid>
           <Grid item xs={6}>
-            <FencerPart fencer={this.state.fighter2} otherFencer={this.state.fighter1} club={fencer2Club} fightHistory={fencerFightHistory} isRight />
+            <FencerPart fencer={this.state.fighter2} otherFencer={this.state.fighter1} fightHistory={fencerFightHistory} isRight />
           </Grid>
         </Grid>
       </div>

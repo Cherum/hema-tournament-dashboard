@@ -1,17 +1,4 @@
 
-export interface Club {
-    name: string,
-    city: string,
-    website?: string,
-    facebook?: string,
-    fighterCount: number,
-    clubid: number
-}
-export interface HemaEvent {
-    name: string,
-    fightCount: number,
-    winToLossRatio: number
-}
 export interface Fencer {
     name: string,
     nationality: string,
