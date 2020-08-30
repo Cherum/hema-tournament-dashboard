@@ -50,6 +50,7 @@ class FencerPart extends React.Component<any> {
                                     </ListItem>
                                 )
                             })} */}
+                            TBA
                         </List>
                     </CardContent>
                 </Card>

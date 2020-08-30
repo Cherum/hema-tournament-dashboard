@@ -119,7 +119,6 @@ class App extends React.Component<IProps, IState> {
             <Typography variant="h4" gutterBottom>
               HEMA Longsword Tournament Dashboard
             </Typography>
-            <Button>Highlight</Button>
           </Toolbar>
         </AppBar>
         <Grid container spacing="2">
