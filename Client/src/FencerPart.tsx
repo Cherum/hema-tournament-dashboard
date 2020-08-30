@@ -30,7 +30,6 @@ class FencerPart extends React.Component<any> {
         const { classes } = this.props;
         const club: Club = this.props.club;
         const events: Any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
-        console.log("events", events)
         const fightHistory: Array<Fight> = this.props.fightHistory;
         const clubUrl: string = "https://hemaratings.com/clubs/details/" + club.clubid;
 

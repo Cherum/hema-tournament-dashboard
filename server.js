@@ -86,6 +86,7 @@ app.get('/fighter/:fighter', (req, res) => {
 
       const fencer = {
         name: fighterName,
+        userid: fighterId,
         nationality: country,
         clubName: clubName,
         clubId: clubId,

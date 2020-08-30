@@ -8,27 +8,6 @@ export const fencer1Club: Club = {
     fighterCount: 16,
     clubid: 278
 }
-export const fencer1: Fencer = {
-    name: "Alexander Fürgut",
-    nationality: "DE",
-    rank: 143,
-    rating: 1623.8,
-    wins: 35,
-    losses: 16,
-    draws: 1,
-    userid: 3528
-}
-
-export const fencer1Events: Array<HemaEvent> = [
-    { name: "Flügelschlag Stuttgart 2019 (September 2019)", fightCount: 5, winToLossRatio: 4 / 1 },
-    { name: "European Games Invitational Gala Tournament 2019 (June 2019)", fightCount: 4, winToLossRatio: 1 / 3 },
-    // "Frühlingsfechten 2019 (April 2019)",
-    // "Swordtrip - The Gathering 2019 (April 2019)",
-    // "Dürer Turnier 2019 (March 2019)",
-    // "Treffen Historischer Fechter Deutschlands 2018 (June 2018)",
-    // "Swordtrip - the Gathering 2018 (April 2018)",
-    // "Swordfish 2017 (November 2017)"
-]
 
 export const fencer2Club: Club = {
     name: "Twerchhau e. V.",
@@ -38,31 +17,6 @@ export const fencer2Club: Club = {
     fighterCount: 8,
     clubid: 659
 }
-export const fencer2: Fencer = {
-    name: "Tom Tempel",
-    nationality: "DE",
-    rank: 509,
-    rating: 1450.6,
-    wins: 34,
-    losses: 21,
-    draws: 3,
-    userid: 5602
-}
-
-export const fencer2Events: Array<HemaEvent> = [
-    { name: "9. Dresdner Fechtschul 2019 (September 2019)", fightCount: 4, winToLossRatio: 2 / 2 },
-    { name: "Frühlingsfechten 2019 (April 2019)", fightCount: 5, winToLossRatio: 0 / 5 },
-    // "6. Herkules HEMA Turnier Kassel (October 2019)",
-    // "Frühlingsfechten 2019 (April 2019)",
-    // "Swordtrip - The Gathering 2019 (April 2019)",
-    // "Dürer Turnier 2019 (March 2019)",
-    // "5. offenes Fechtturnier in Kassel (October 2018)",
-    // "8. Dresdner Fechtschul (September 2018)",
-    // "Frühlingsfechten 2018 (April 2018)",
-    // "Swordtrip - the Gathering 2018 (April 2018)",
-    // "4. offenes Fechtturnier in Kassel (November 2017)",
-    // "Vasaslaget 2015 (March 2015)"
-]
 
 export const fencerFightHistory: Array<Fight> = [
     {

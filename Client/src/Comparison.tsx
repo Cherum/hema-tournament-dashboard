@@ -1,7 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Fencer, Club, HemaEvent, Fight, FightResult } from './types'
-import { fencer1Club, fencer2Club, fencerFightHistory } from './data';
+import { fencerFightHistory } from './data';
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Link from '@material-ui/core/Link';
@@ -22,12 +22,26 @@ function Line(props: any) {
 
     const textcolor: string = doHighlight ? "inherit" : "info.contrastText";
 
+    let leftLink
+    if (props.leftLink) {
+        leftLink = <Link href={props.leftLink} target="_blank" rel="noopener">{props.left}</Link>;
+    } else {
+        leftLink = props.left;
+    }
+
+    let rightLink
+    if (props.rightLink) {
+        rightLink = <Link href={props.rightLink} target="_blank" rel="noopener">{props.right}</Link>;
+    } else {
+        rightLink = props.left;
+    }
+
     return (
         <Grid container spacing="2">
             <Grid item xs={5} align="right">
                 <Box bgcolor={leftBgColor} color={textcolor}>
                     <Typography variant="h5">
-                        {props.left}
+                        {leftLink}
                     </Typography>
                 </Box>
             </Grid>
@@ -41,7 +55,7 @@ function Line(props: any) {
             <Grid item xs={5} align="left">
                 <Box bgcolor={rightBgColor} color={textcolor}>
                     <Typography variant="h5">
-                        {props.right}
+                        {rightLink}
                     </Typography>
                 </Box>
             </Grid>
@@ -141,28 +155,33 @@ class Comparison extends React.Component<any> {
     render() {
         const fencer: Fencer = this.props.fencer;
         const other: Fencer = this.props.otherFencer;
+        const fencerClubUrl: string = "https://hemaratings.com/clubs/details/" + fencer.clubId;
+        const otherClubUrl: string = "https://hemaratings.com/clubs/details/" + other.clubId;
 
         return (
             <div>
                 <HeaderLine left={fencer} right={other} />
-                <Line left={fencer.clubName} right={other.clubName} label="Club" />
-                <Line left={fencer.nationality} right={other.nationality} label="Country" />
-                <Line left={this.recordString(fencer)} right={this.recordString(other)} label="Record" />
-                <Line
-                    left={this.winLossRatio(fencer) + " : 1"} right={this.winLossRatio(other) + " : 1"} label="Win ratio"
+                <Line label="Club"
+                    left={fencer.clubName} right={other.clubName}
+                    leftLink={fencerClubUrl} rightLink={otherClubUrl} />
+                <Line label="Country"
+                    left={fencer.nationality} right={other.nationality} />
+                <Line label="Record" left={this.recordString(fencer)} right={this.recordString(other)} />
+                <Line label="Win ratio"
+                    left={this.winLossRatio(fencer) + " : 1"} right={this.winLossRatio(other) + " : 1"}
                     highlight={this.state.showHighlight}
                     betterSide={this.hasBetterWinRatio(this.winLossRatio(fencer), this.winLossRatio(other))}
                 />
-                <Line left={fencer.rank} right={other.rank} label="Rank"
+                <Line label="Rank" left={fencer.rank} right={other.rank}
                     highlight={this.state.showHighlight}
                     betterSide={this.hasBetterRank(fencer.rank, other.rank)}
                 />
-                <Line left={fencer.rating} right={other.rating} label="Rating"
+                <Line label="Rating" left={fencer.rating} right={other.rating}
                     highlight={this.state.showHighlight}
                     betterSide={this.hasBetterRating(fencer.rating, other.rating)}
                 />
-                <Line
-                    left={this.fencerPastRecord(fencer, other, fencerFightHistory)} right={this.fencerPastRecord(other, fencer, fencerFightHistory)} label="Past fights"
+                <Line label="Past fights"
+                    left={this.fencerPastRecord(fencer, other, fencerFightHistory)} right={this.fencerPastRecord(other, fencer, fencerFightHistory)}
                     highlight={this.state.showHighlight}
                     betterSide={BetterSide.Equal}
                 />

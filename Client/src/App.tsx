@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import FencerPart from './FencerPart'
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import { fencer1, fencer2, fencer1Club, fencer2Club, fencer1Events, fencer2Events, fencerFightHistory } from './data'
+import { fencer1Club, fencer2Club, fencerFightHistory } from './data'
 import Comparison from './Comparison'
 import { Button, Toolbar, TextField } from '@material-ui/core';
 import { Fencer } from './types';
@@ -62,7 +62,8 @@ class App extends React.Component<IProps, IState> {
       wins: res.wins,
       losses: res.losses,
       draws: res.draws,
-      pastEvents: res.tournaments
+      pastEvents: res.tournaments,
+      userid: res.userid
     }
     return fighter;
   }
