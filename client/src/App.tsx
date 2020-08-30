@@ -5,11 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import FencerPart from './FencerPart'
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import { fencer1Club, fencer2Club, fencerFightHistory } from './data'
 import Comparison from './Comparison'
 import { Button, Toolbar, TextField } from '@material-ui/core';
 import { Fencer } from './types';
-import { timingSafeEqual } from 'crypto';
 
 const styles = {
   root: {
@@ -158,10 +156,10 @@ class App extends React.Component<IProps, IState> {
 
         <Grid container className={classes.root}>
           <Grid item xs={6}>
-            <FencerPart fencer={this.state.fighter1} otherFencer={this.state.fighter2} fightHistory={fencerFightHistory} isLeft />
+            <FencerPart fencer={this.state.fighter1} otherFencer={this.state.fighter2} isLeft />
           </Grid>
           <Grid item xs={6}>
-            <FencerPart fencer={this.state.fighter2} otherFencer={this.state.fighter1} fightHistory={fencerFightHistory} isRight />
+            <FencerPart fencer={this.state.fighter2} otherFencer={this.state.fighter1} isRight />
           </Grid>
         </Grid>
       </div>

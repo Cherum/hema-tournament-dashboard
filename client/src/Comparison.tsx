@@ -1,7 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Fencer, Club, HemaEvent, Fight, FightResult } from './types'
-import { fencerFightHistory } from './data';
+import { Fencer } from './types'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Link from '@material-ui/core/Link';

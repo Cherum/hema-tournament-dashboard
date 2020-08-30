@@ -1,12 +1,11 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Fencer, Club, HemaEvent, Fight, FightResult } from './types'
+import { Fencer } from './types'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { withStyles } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
 
 const styles = {
     root: {
@@ -27,10 +26,7 @@ class FencerPart extends React.Component<any> {
     }
 
     render() {
-        const { classes } = this.props;
-        const club: Club = this.props.club;
         const events: Any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
-        const fightHistory: Array<Fight> = this.props.fightHistory;
 
         return (
             <div>
