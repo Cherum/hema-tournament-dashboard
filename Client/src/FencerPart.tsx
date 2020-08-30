@@ -28,9 +28,9 @@ class FencerPart extends React.Component<any> {
 
     render() {
         const { classes } = this.props;
-        const fencer: Fencer = this.props.fencer;
         const club: Club = this.props.club;
-        const events: Array<HemaEvent> = this.props.events;
+        const events: Any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
+        console.log("events", events)
         const fightHistory: Array<Fight> = this.props.fightHistory;
         const clubUrl: string = "https://hemaratings.com/clubs/details/" + club.clubid;
 
@@ -63,7 +63,7 @@ class FencerPart extends React.Component<any> {
                             Previous fights
                         </Typography>
                         <List>
-                            {fightHistory.map((fight: Fight) => {
+                            {/* {fightHistory.map((fight: Fight) => {
                                 const fightResult = fight.fighter1 === fencer.name ? fight.resultForFighter1 : fight.resultForFighter2;
                                 return (
                                     <ListItem>
@@ -72,7 +72,7 @@ class FencerPart extends React.Component<any> {
                                         </Typography>
                                     </ListItem>
                                 )
-                            })}
+                            })} */}
                         </List>
                     </CardContent>
                 </Card>
@@ -82,8 +82,8 @@ class FencerPart extends React.Component<any> {
                             Last 10 tournaments
                         </Typography>
                         <List>
-                            {events.map((event: HemaEvent) => (
-                                <ListItem>{event.name} {event.fightCount} {event.winToLossRatio.toFixed(1)}</ListItem>
+                            {events.map((event: Any) => (
+                                <ListItem>{event.name} | Record: {event.wins}-{event.losses}-{event.draws}</ListItem>
                             ))}
                         </List>
                     </CardContent>

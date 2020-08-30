@@ -61,7 +61,8 @@ class App extends React.Component<IProps, IState> {
       rating: res.rating,
       wins: res.wins,
       losses: res.losses,
-      draws: res.draws
+      draws: res.draws,
+      pastEvents: res.tournaments
     }
     return fighter;
   }
@@ -132,10 +133,10 @@ class App extends React.Component<IProps, IState> {
 
         <Grid container className={classes.root}>
           <Grid item xs={6}>
-            <FencerPart fencer={fencer1} otherFencer={fencer2} club={fencer1Club} events={fencer1Events} fightHistory={fencerFightHistory} isLeft />
+            <FencerPart fencer={this.state.fighter1} otherFencer={this.state.fighter2} club={fencer1Club} fightHistory={fencerFightHistory} isLeft />
           </Grid>
           <Grid item xs={6}>
-            <FencerPart fencer={fencer2} otherFencer={fencer1} club={fencer2Club} events={fencer2Events} fightHistory={fencerFightHistory} isRight />
+            <FencerPart fencer={this.state.fighter2} otherFencer={this.state.fighter1} club={fencer2Club} fightHistory={fencerFightHistory} isRight />
           </Grid>
         </Grid>
       </div>

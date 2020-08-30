@@ -22,7 +22,8 @@ export interface Fencer {
     wins: number,
     losses: number,
     draws: number,
-    userid: number
+    userid: number,
+    pastEvents?: any
 }
 
 export enum FightResult {

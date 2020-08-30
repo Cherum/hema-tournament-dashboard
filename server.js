@@ -60,6 +60,7 @@ app.get('/fighter/:fighter', (req, res) => {
 
       let lastTournaments = new Map()
       let currentTournament = "";
+      let tournamentCounter = 0;
       const steelLongswordTds = $('h4:contains("Longsword (Mixed/Men, Steel)")', html)
         .parent().find('td:contains("Steel Longsword")', html)
         .siblings()
@@ -67,8 +68,12 @@ app.get('/fighter/:fighter', (req, res) => {
           const text = $(this).text().trim();
           if (text) {
             if (text.substr(text.length - 1, text.length - 1) === ")" && text !== currentTournament) {
+              tournamentCounter++;
+              if (tournamentCounter >= 11) {
+                return false; // break .each loop
+              }
               currentTournament = text;
-              lastTournaments[currentTournament] = { wins: 0, losses: 0, draws: 0 }
+              lastTournaments[currentTournament] = { name: currentTournament, wins: 0, losses: 0, draws: 0 }
             } else if (text === "WIN") {
               lastTournaments[currentTournament].wins += 1;
             } else if (text === "LOSS") {
@@ -89,7 +94,7 @@ app.get('/fighter/:fighter', (req, res) => {
         wins: wins,
         losses: losses,
         draws: draws,
-        tournaments: lastTournaments
+        tournaments: Object.values(lastTournaments)
       }
       console.log("fencer", fencer)
 
