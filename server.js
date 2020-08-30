@@ -28,7 +28,9 @@ app.get('/fighter/:fighter', (req, res) => {
       const clubName = $('dd > a', html).text();
       const clubUrl = $('dd > a', html)[0].attribs.href;
       const country = $('dd > .flag-icon', html)[0].attribs.title;
-      console.log("fighter/club info", fighterName, clubName, clubUrl, country)
+      const clubUrlArray = clubUrl.substr(1, clubUrl.length - 2).split("/");
+      const clubId = clubUrlArray[clubUrlArray.length - 1]
+      console.log("fighter/club info", fighterName, clubName, clubUrl, clubId, country)
 
       let totalFights = 0;
       let wins = 0;
@@ -36,18 +38,22 @@ app.get('/fighter/:fighter', (req, res) => {
       let draws = 0;
       {
         const recordsTable = $('h3:contains("Record")', html).parent().find('td:contains("Mixed Steel Longsword")');
-        totalFights += parseInt(recordsTable.siblings()[0].children[0].data);
-        wins += parseInt(recordsTable.siblings()[1].children[0].data);
-        losses += parseInt(recordsTable.siblings()[2].children[0].data);
-        draws += parseInt(recordsTable.siblings()[3].children[0].data);
+        if (recordsTable && recordsTable.siblings().length > 0) {
+          totalFights += parseInt(recordsTable.siblings()[0].children[0].data);
+          wins += parseInt(recordsTable.siblings()[1].children[0].data);
+          losses += parseInt(recordsTable.siblings()[2].children[0].data);
+          draws += parseInt(recordsTable.siblings()[3].children[0].data);
+        }
       }
 
       {
         const recordsTable = $('h3:contains("Record")', html).parent().find('td:contains("Men\'s Steel Longsword")');
-        totalFights += parseInt(recordsTable.siblings()[0].children[0].data);
-        wins += parseInt(recordsTable.siblings()[1].children[0].data);
-        losses += parseInt(recordsTable.siblings()[2].children[0].data);
-        draws += parseInt(recordsTable.siblings()[3].children[0].data);
+        if (recordsTable && recordsTable.siblings().length > 0) {
+          totalFights += parseInt(recordsTable.siblings()[0].children[0].data);
+          wins += parseInt(recordsTable.siblings()[1].children[0].data);
+          losses += parseInt(recordsTable.siblings()[2].children[0].data);
+          draws += parseInt(recordsTable.siblings()[3].children[0].data);
+        }
       }
       console.log("fights", totalFights, wins, losses, draws)
 
@@ -60,6 +66,7 @@ app.get('/fighter/:fighter', (req, res) => {
         name: fighterName,
         nationality: country,
         clubName: clubName,
+        clubId: clubId,
         rank: rank,
         rating: rating,
         wins: wins,
@@ -74,6 +81,14 @@ app.get('/fighter/:fighter', (req, res) => {
       //handle error
       console.error(err)
     });
+});
+
+app.get('/club/:club', (req, res) => {
+  const clubId = req.params.club
+  const url = "https://hemaratings.com/clubs/details/" + clubId + "/"
+  console.log("get club", url)
+
+  res.send(JSON.stringify(url, null, 2))
 });
 
 app.get('*', (req, res) => {

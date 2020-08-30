@@ -31,6 +31,7 @@ interface IState {
 class App extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
+    this.startSearch = this.startSearch.bind(this);
   }
   state = {
     fighter1Id: 10,
@@ -50,45 +51,44 @@ class App extends React.Component<IProps, IState> {
 
     return body;
   };
+  convertResultToFencer(res: any): Fencer {
+    const fighter: Fencer = {
+      name: res.name,
+      nationality: res.nationality,
+      clubName: res.clubName,
+      clubId: res.clubId,
+      rank: res.rank,
+      rating: res.rating,
+      wins: res.wins,
+      losses: res.losses,
+      draws: res.draws
+    }
+    return fighter;
+  }
   refreshNames() {
-    console.log("refreshNames")
+    console.log("refreshNames", this.state.fighter1Id, this.state.fighter2Id)
     this.fetchUsers(this.state.fighter1Id)
       .then(res => {
-        const fighter: Fencer = {
-          name: res.name,
-          nationality: res.nationality,
-          clubName: res.clubName,
-          rank: res.rank,
-          rating: res.rating,
-          wins: res.wins,
-          losses: res.losses,
-          draws: res.draws
-        }
         this.setState({
-          fighter1: fighter
+          fighter1: this.convertResultToFencer(res)
         })
-        console.log("finished setting fighter 1", fighter)
+        console.log("finished setting fighter 1")
       })
       .catch(err => console.warn(err));
 
     this.fetchUsers(this.state.fighter2Id)
-      .then(res => {  // TODO remove duplication
-        const fighter: Fencer = {
-          name: res.name,
-          nationality: res.nationality,
-          clubName: res.clubName,
-          rank: res.rank,
-          rating: res.rating,
-          wins: res.wins,
-          losses: res.losses,
-          draws: res.draws
-        }
+      .then(res => {
         this.setState({
-          fighter2: fighter
+          fighter2: this.convertResultToFencer(res)
         })
-        console.log("finished setting fighter 2", fighter)
+        console.log("finished setting fighter 2")
       })
       .catch(err => console.warn(err));
+  }
+  startSearch(e): void {
+    e.preventDefault();
+    console.log("start search")
+    this.refreshNames();
   }
 
   render() {
@@ -98,7 +98,7 @@ class App extends React.Component<IProps, IState> {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h4" gutterBottom>
-              HEMA Tournament Dashboard
+              HEMA Longsword Tournament Dashboard
             </Typography>
             <Button>Highlight</Button>
           </Toolbar>
@@ -108,13 +108,20 @@ class App extends React.Component<IProps, IState> {
 
           </Grid>
           <Grid item xs={3} align="right">
-            <TextField label="First fencer ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" required autoFocus fullWidth />
+            <TextField
+              label="First fencer ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" defaultValue="10"
+              required autoFocus fullWidth
+              onChange={(event: object) => this.setState({ fighter1Id: event.target.value })}
+            />
           </Grid>
           <Grid item xs={2}>
-
+            <Button variant="contained" color="primary" onClick={this.startSearch}>Search</Button>
           </Grid>
           <Grid item xs={3} align="left">
-            <TextField label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" required fullWidth />
+            <TextField
+              label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" defaultValue="1314"
+              required fullWidth
+              onChange={(event: object) => this.setState({ fighter2Id: event.target.value })} />
           </Grid>
           <Grid item xs={2}>
 
