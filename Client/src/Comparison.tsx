@@ -26,15 +26,23 @@ function Line(props: any) {
         <Grid container spacing="2">
             <Grid item xs={5} align="right">
                 <Box bgcolor={leftBgColor} color={textcolor}>
-                    {props.left}
+                    <Typography variant="h5">
+                        {props.left}
+                    </Typography>
                 </Box>
             </Grid>
             <Grid item xs={2}>
-                <Box bgcolor="info.main" color="info.contrastText">{props.label}</Box>
+                <Box bgcolor="info.main" color="info.contrastText">
+                    <Typography variant="h5">
+                        {props.label}
+                    </Typography>
+                </Box>
             </Grid>
             <Grid item xs={5} align="left">
                 <Box bgcolor={rightBgColor} color={textcolor}>
-                    {props.right}
+                    <Typography variant="h5">
+                        {props.right}
+                    </Typography>
                 </Box>
             </Grid>
         </Grid>
@@ -141,7 +149,7 @@ class Comparison extends React.Component<any> {
                 <Line left={fencer.nationality} right={other.nationality} label="Country" />
                 <Line left={this.recordString(fencer)} right={this.recordString(other)} label="Record" />
                 <Line
-                    left={this.winLossRatio(fencer)} right={this.winLossRatio(other)} label="Win ratio"
+                    left={this.winLossRatio(fencer) + " : 1"} right={this.winLossRatio(other) + " : 1"} label="Win ratio"
                     highlight={this.state.showHighlight}
                     betterSide={this.hasBetterWinRatio(this.winLossRatio(fencer), this.winLossRatio(other))}
                 />

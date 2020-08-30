@@ -22,15 +22,13 @@ app.get('/fighter/:fighter', (req, res) => {
 
   rp(url)
     .then(function (html) {
-      //success!    
-      console.log("~~~~~~~~~~~~~~~~~~~~~~")
+      //success!
       const fighterName = $('article > h2', html).text();
       const clubName = $('dd > a', html).text();
       const clubUrl = $('dd > a', html)[0].attribs.href;
       const country = $('dd > .flag-icon', html)[0].attribs.title;
       const clubUrlArray = clubUrl.substr(1, clubUrl.length - 2).split("/");
       const clubId = clubUrlArray[clubUrlArray.length - 1]
-      console.log("fighter/club info", fighterName, clubName, clubUrl, clubId, country)
 
       let totalFights = 0;
       let wins = 0;
@@ -55,12 +53,31 @@ app.get('/fighter/:fighter', (req, res) => {
           draws += parseInt(recordsTable.siblings()[3].children[0].data);
         }
       }
-      console.log("fights", totalFights, wins, losses, draws)
 
       const ratingsTable = $('h3:contains("Current ratings")', html).parent().find('td:contains("Longsword")');
       const rank = parseInt(ratingsTable.siblings()[0].children[0].data);
       const rating = parseFloat(ratingsTable.siblings()[1].children[0].data);
-      console.log("ranking/rating", rank, rating)
+
+      let lastTournaments = new Map()
+      let currentTournament = "";
+      const steelLongswordTds = $('h4:contains("Longsword (Mixed/Men, Steel)")', html)
+        .parent().find('td:contains("Steel Longsword")', html)
+        .siblings()
+        .each(function (i, elm) {
+          const text = $(this).text().trim();
+          if (text) {
+            if (text.substr(text.length - 1, text.length - 1) === ")" && text !== currentTournament) {
+              currentTournament = text;
+              lastTournaments[currentTournament] = { wins: 0, losses: 0, draws: 0 }
+            } else if (text === "WIN") {
+              lastTournaments[currentTournament].wins += 1;
+            } else if (text === "LOSS") {
+              lastTournaments[currentTournament].losses += 1;
+            } else if (text === "DRAW") {
+              lastTournaments[currentTournament].draws += 1;
+            }
+          }
+        });
 
       const fencer = {
         name: fighterName,
@@ -72,6 +89,7 @@ app.get('/fighter/:fighter', (req, res) => {
         wins: wins,
         losses: losses,
         draws: draws,
+        tournaments: lastTournaments
       }
       console.log("fencer", fencer)
 
