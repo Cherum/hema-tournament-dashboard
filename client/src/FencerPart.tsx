@@ -20,13 +20,13 @@ class FencerPart extends React.Component<any> {
         return fencer.rank > other.rank;
     }
     hasBetterWinLossRatio(fencer: Fencer, other: Fencer): boolean {
-        const winRatio: number = (fencer.wins / fencer.losses).toFixed(1)
-        const winRatioOther: number = (other.wins / other.losses).toFixed(1)
+        const winRatio: number = parseFloat((fencer.wins / fencer.losses).toFixed(1))
+        const winRatioOther: number = parseFloat((other.wins / other.losses).toFixed(1))
         return winRatio > winRatioOther;
     }
 
     render() {
-        const events: Any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
+        const events: any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
 
         return (
             <div>
@@ -56,7 +56,7 @@ class FencerPart extends React.Component<any> {
                             Last 10 tournaments
                         </Typography>
                         <List>
-                            {events.map((event: Any) => (
+                            {events.map((event: any) => (
                                 <ListItem>{event.name} | Record: {event.wins}-{event.losses}-{event.draws}</ListItem>
                             ))}
                         </List>

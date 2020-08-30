@@ -36,8 +36,8 @@ function Line(props: any) {
     }
 
     return (
-        <Grid container spacing="2">
-            <Grid item xs={5} align="right">
+        <Grid container spacing={2}>
+            <Grid item xs={5} container justify="flex-end">
                 <Box bgcolor={leftBgColor} color={textcolor}>
                     <Typography variant="h5">
                         {leftLink}
@@ -51,7 +51,7 @@ function Line(props: any) {
                     </Typography>
                 </Box>
             </Grid>
-            <Grid item xs={5} align="left">
+            <Grid item xs={5} container justify="flex-start">
                 <Box bgcolor={rightBgColor} color={textcolor}>
                     <Typography variant="h5">
                         {rightLink}
@@ -66,8 +66,8 @@ function HeaderLine(props: any) {
     const otherUrl: string = "https://hemaratings.com/fighters/details/" + props.right.userid;
 
     return (
-        <Grid container spacing="2">
-            <Grid item xs={5} align="right">
+        <Grid container spacing={2}>
+            <Grid item xs={5} container justify="flex-end">
                 <Typography variant="h3">
                     <Link href={fencerUrl} target="_blank" rel="noopener">{props.left.name}</Link>
                 </Typography>
@@ -77,7 +77,7 @@ function HeaderLine(props: any) {
                     <Typography variant="h3">VS</Typography>
                 </Box>
             </Grid>
-            <Grid item xs={5} align="left">
+            <Grid item xs={5} container justify="flex-start">
                 <Typography variant="h3">
                     <Link href={otherUrl} target="_blank" rel="noopener">{props.right.name}</Link>
                 </Typography>
@@ -86,18 +86,18 @@ function HeaderLine(props: any) {
     )
 }
 class Comparison extends React.Component<any> {
-    constructor(props) {
+    constructor(props: any) {
         super(props);
-        this.state = {
-            showHighlight: true
-        }
+    }
+    state = {
+        showHighlight: true
     }
 
     recordString(fencer: Fencer): string {
         return fencer.wins + "-" + fencer.losses + "-" + fencer.draws
     }
-    winLossRatio(fencer: Fencer): string {
-        return (fencer.wins / fencer.losses).toFixed(1)
+    winLossRatio(fencer: Fencer): number {
+        return parseFloat((fencer.wins / fencer.losses).toFixed(1))
     }
 
     isHigher(left: number, right: number): BetterSide {
