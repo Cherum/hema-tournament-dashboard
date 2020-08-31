@@ -13,7 +13,10 @@ const styles = {
   root: {
     margin: "5%",
     maxWidth: "90%"
-  }
+  },
+  title: {
+    flexGrow: 1,
+  },
 };
 
 class App extends React.Component<any> {
@@ -28,7 +31,9 @@ class App extends React.Component<any> {
     fighter2: {},
     fighter1Name: "Dennis Ljungqvist",
     fighter2Name: "Kristian Ruokonen",
-    highlightAdvantage: true
+    highlightAdvantage: true,
+    fighter1Error: "",
+    fighter2Error: ""
   }
 
   componentDidMount() {
@@ -38,19 +43,39 @@ class App extends React.Component<any> {
   refreshFighterName = async (fighterId: number, isFighter1: boolean) => {
     const response = await fetch('/fightername/' + fighterId);
     const body = await response.json();
-    if (response.status !== 200) throw Error(body.message);
+    if (response.status !== 200) {
+      if (isFighter1) {
+        this.setState({
+          fighter1Error: "Couldn't find fencer with id " + fighterId
+        })
+      } else {
+        this.setState({
+          fighter2Error: "Couldn't find fencer with id " + fighterId
+        })
+      }
+      return;
+    }
+
     if (isFighter1) {
-      this.setState({ fighter1Name: body })
+      this.setState({
+        fighter1Name: body,
+        fighter1Error: ""
+      })
     } else {
-      this.setState({ fighter2Name: body })
+      this.setState({
+        fighter2Name: body,
+        fighter2Error: ""
+      })
     }
   }
 
   fetchUsers = async (fighterId: number, opponentName: string) => {
-    console.log("fetchUsers", fighterId, opponentName)
     const response = await fetch('/fighter/' + fighterId + "/opponentname/" + opponentName);
     const body = await response.json();
-    if (response.status !== 200) throw Error(body.message);
+    if (response.status !== 200) {
+      console.log("throw error")
+      throw Error(body.message);
+    }
 
     return body;
   };
@@ -72,13 +97,19 @@ class App extends React.Component<any> {
     return fighter;
   }
   refreshNames() {
+    console.log("load user")
     this.fetchUsers(this.state.fighter1Id, this.state.fighter2Name)
       .then(res => {
         this.setState({
           fighter1: this.convertResultToFencer(res)
         })
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+        this.setState({
+          fighter1: {}
+        })
+      });
 
     this.fetchUsers(this.state.fighter2Id, this.state.fighter1Name)
       .then(res => {
@@ -86,7 +117,12 @@ class App extends React.Component<any> {
           fighter2: this.convertResultToFencer(res)
         })
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+        this.setState({
+          fighter2: {}
+        })
+      });
   }
   startSearch(e: any): void {
     e.preventDefault();
@@ -99,7 +135,7 @@ class App extends React.Component<any> {
       <div className="App">
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" className={classes.title} align="left">
               HEMA Longsword Tournament Dashboard
             </Typography>
             <FormControlLabel
@@ -128,23 +164,32 @@ class App extends React.Component<any> {
               onChange={(event: any) => {
                 this.setState({
                   fighter1Id: event.target.value
-                })
+                });
                 this.refreshFighterName(event.target.value, true)
+                this.refreshNames();
               }}
+              error={this.state.fighter1Error !== ""}
+              helperText={this.state.fighter1Error}
             />
           </Grid>
           <Grid item xs={12} sm={4} md={2}>
             <Button variant="contained" color="secondary" onClick={this.startSearch}>Search</Button>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
-            ID belongs to {this.state.fighter2Name}
+            ID belongs to {this.state.fighter2Name} {this.state.fighter2Error}
             <TextField
               label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" defaultValue="1314"
               required fullWidth
               onChange={(event: any) => {
-                this.setState({ fighter2Id: event.target.value })
+                this.setState({
+                  fighter2Id: event.target.value
+                });
                 this.refreshFighterName(event.target.value, false)
-              }} />
+                this.refreshNames();
+              }}
+              error={this.state.fighter2Error !== ""}
+              helperText={this.state.fighter2Error}
+            />
           </Grid>
           <Grid item xs={false} md={2}>
           </Grid>

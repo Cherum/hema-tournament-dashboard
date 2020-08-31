@@ -17,29 +17,26 @@ const { count } = require('console');
 
 app.get('/fightername/:fighter', (req, res) => {
   const fighterId = req.params.fighter
-  console.log("get fighter name", fighterId)
   const url = 'https://hemaratings.com/fighters/details/' + fighterId + '/';
 
   rp(url)
     .then(function (html) {
       const fighterName = $('article > h2', html).text();
-      res.send(JSON.stringify(fighterName, null, 2))
+      res.status(200).send(JSON.stringify(fighterName, null, 2))
     })
     .catch(function (err) {
-      //handle error
-      console.error(err)
+      console.error("error reading fighter name", err)
+      res.status(404).send(JSON.stringify("Not found"));
     });
 });
 
 app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
   const opponentName = req.params.opponent
   const fighterId = req.params.fighter
-  console.log("get fighter", fighterId, opponentName)
   const url = 'https://hemaratings.com/fighters/details/' + fighterId + '/';
 
   rp(url)
     .then(function (html) {
-      //success!
       const fighterName = $('article > h2', html).text();
       const clubName = $('dd > a', html).text();
       const clubUrl = $('dd > a', html)[0].attribs.href;
@@ -110,7 +107,6 @@ app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
                 lastFoughtAgainstAdded = true;
               }
             } else if (text === opponentName) {
-              console.log("opponent match found")
               lastFoughtAgainstAdded = false;
             }
           }
@@ -130,13 +126,13 @@ app.get('/fighter/:fighter/opponentname/:opponent', (req, res) => {
         tournaments: Object.values(lastTournaments),
         opponentStatistic: foughtAgainst
       }
-      console.log("fencer", fencer)
+      // console.log("fencer", fencer)
 
-      res.send(JSON.stringify(fencer, null, 2))
+      res.status(200).send(JSON.stringify(fencer, null, 2))
     })
     .catch(function (err) {
-      //handle error
-      console.error(err)
+      console.error("error reading fighter", err)
+      res.status(404).send(JSON.stringify("Not found"));
     });
 });
 

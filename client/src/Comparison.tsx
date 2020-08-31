@@ -42,21 +42,21 @@ function Line(props: any) {
         }}>
             <Grid item xs={4} md={5} container justify="flex-end">
                 <Box bgcolor={leftBgColor} color={textcolor} padding={1}>
-                    <Typography variant="h5">
+                    <Typography variant="h6" component="body">
                         {leftLink}
                     </Typography>
                 </Box>
             </Grid>
             <Grid item xs={4} md={2}>
                 <Box bgcolor="info.main" color="info.contrastText" padding={1}>
-                    <Typography variant="h5">
+                    <Typography variant="h6" component="body">
                         {props.label}
                     </Typography>
                 </Box>
             </Grid>
             <Grid item xs={4} md={5} container justify="flex-start">
                 <Box bgcolor={rightBgColor} color={textcolor} padding={1}>
-                    <Typography variant="h5">
+                    <Typography variant="h6" component="body">
                         {rightLink}
                     </Typography>
                 </Box>
@@ -74,17 +74,17 @@ function HeaderLine(props: any) {
             width: '100%',
         }}>
             <Grid item xs={4} md={5} container justify="flex-end">
-                <Typography variant="h3">
+                <Typography variant="h4" component="h2">
                     <Link href={fencerUrl} target="_blank" rel="noopener">{props.left.name}</Link>
                 </Typography>
             </Grid>
             <Grid item xs={4} md={2}>
                 <Box bgcolor="info.main" color="info.contrastText">
-                    <Typography variant="h3">VS</Typography>
+                    <Typography variant="h4" component="body">VS</Typography>
                 </Box>
             </Grid>
             <Grid item xs={4} md={5} container justify="flex-start">
-                <Typography variant="h3">
+                <Typography variant="h4" component="h2">
                     <Link href={otherUrl} target="_blank" rel="noopener">{props.right.name}</Link>
                 </Typography>
             </Grid>
@@ -94,10 +94,6 @@ function HeaderLine(props: any) {
 class Comparison extends React.Component<any> {
     state = {
         showHighlight: true
-    }
-    constructor(props: any) {
-        super(props);
-
     }
     componentWillReceiveProps(nextProps: any) {
         if (nextProps.showHighlight !== this.props.showHighlight) {
@@ -111,7 +107,6 @@ class Comparison extends React.Component<any> {
     winLossRatio(fencer: Fencer): number {
         return parseFloat((fencer.wins / fencer.losses).toFixed(1))
     }
-
     isHigher(left: number, right: number): BetterSide {
         if (left > right) {
             return BetterSide.Left;
@@ -130,13 +125,19 @@ class Comparison extends React.Component<any> {
             return BetterSide.Equal;
         }
     }
-    hasBetterWinRatio(left: number, right: number): BetterSide {
+    hasBetterWinRatio(fencer: Fencer, other: Fencer): BetterSide {
+        const left: number = this.winLossRatio(fencer);
+        const right: number = this.winLossRatio(other);
         return this.isHigher(left, right);
     }
-    hasBetterRank(left: number, right: number) {
+    hasBetterRank(fencer: Fencer, other: Fencer) {
+        const left: number = fencer.rank;
+        const right: number = other.rank;
         return this.isLower(left, right);
     }
-    hasBetterRating(left: number, right: number) {
+    hasBetterRating(fencer: Fencer, other: Fencer) {
+        const left: number = fencer.rating;
+        const right: number = other.rating;
         return this.isHigher(left, right);
     }
     hasBetterOpponentStatistic(left: Fencer) {
@@ -151,6 +152,7 @@ class Comparison extends React.Component<any> {
         }
         return ""
     }
+
     render() {
         const fencer: Fencer = this.props.fencer;
         const other: Fencer = this.props.otherFencer;
@@ -159,28 +161,51 @@ class Comparison extends React.Component<any> {
 
         return (
             <div>
-                <HeaderLine left={fencer} right={other} />
+                <HeaderLine
+                    left={fencer}
+                    right={other}
+                />
                 <Line label="Club"
-                    left={fencer.clubName} right={other.clubName}
-                    leftLink={fencerClubUrl} rightLink={otherClubUrl} />
+                    left={fencer.clubName}
+                    right={other.clubName}
+                    leftLink={fencerClubUrl}
+                    rightLink={otherClubUrl}
+                />
+
                 <Line label="Country"
-                    left={fencer.nationality} right={other.nationality} />
-                <Line label="Record" left={this.recordString(fencer)} right={this.recordString(other)} />
+                    left={fencer.nationality}
+                    right={other.nationality}
+                />
+
+                <Line label="Record"
+                    left={this.recordString(fencer)}
+                    right={this.recordString(other)}
+                />
+
                 <Line label="Win ratio"
-                    left={this.winLossRatio(fencer) + " : 1"} right={this.winLossRatio(other) + " : 1"}
+                    left={this.winLossRatio(fencer) + " : 1"}
+                    right={this.winLossRatio(other) + " : 1"}
                     highlight={this.state.showHighlight}
-                    betterSide={this.hasBetterWinRatio(this.winLossRatio(fencer), this.winLossRatio(other))}
+                    betterSide={this.hasBetterWinRatio(fencer, other)}
                 />
-                <Line label="Rank" left={fencer.rank} right={other.rank}
+
+                <Line label="Rank"
+                    left={fencer.rank}
+                    right={other.rank}
                     highlight={this.state.showHighlight}
-                    betterSide={this.hasBetterRank(fencer.rank, other.rank)}
+                    betterSide={this.hasBetterRank(fencer, other)}
                 />
-                <Line label="Rating" left={fencer.rating} right={other.rating}
+
+                <Line label="Rating"
+                    left={fencer.rating}
+                    right={other.rating}
                     highlight={this.state.showHighlight}
-                    betterSide={this.hasBetterRating(fencer.rating, other.rating)}
+                    betterSide={this.hasBetterRating(fencer, other)}
                 />
+
                 <Line label="Past fights"
-                    left={this.fencerPastRecord(fencer)} right={this.fencerPastRecord(other)}
+                    left={this.fencerPastRecord(fencer)}
+                    right={this.fencerPastRecord(other)}
                     highlight={this.state.showHighlight}
                     betterSide={this.hasBetterOpponentStatistic(fencer)}
                 />
