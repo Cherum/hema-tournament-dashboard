@@ -6,6 +6,14 @@ import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { withStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import Paper from '@material-ui/core/Paper';
 
 const styles = {
     root: {
@@ -27,16 +35,41 @@ class FencerPart extends React.Component<any> {
 
     render() {
         const events: any = this.props.fencer.pastEvents ? this.props.fencer.pastEvents : [];
+        const winBgColor: string = "green";
+        const lossBgColor: string = "red";
 
         return (
             <div>
-                <Card raised>
-                    <CardContent>
-                        <Typography variant="h5" component="h3">
-                            Previous fights
+                <Typography variant="h5" component="h3" gutterBottom>
+                    {this.props.fencer.name} tournament history
+                </Typography>
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Event name</TableCell>
+                                <TableCell align="right">Result</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {events.map((event: any) => (
+                                <TableRow key={event.name} hover>
+                                    <TableCell>{event.name}</TableCell>
+                                    <TableCell align="right">
+                                        <Box bgcolor={event.wins > event.losses ? winBgColor : lossBgColor} color="info.contrastText" padding={1}>
+                                            {event.wins}-{event.losses}-{event.draws}
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Typography variant="h5" component="h3">
+                    Previous fights
                         </Typography>
-                        <List>
-                            {/* {fightHistory.map((fight: Fight) => {
+                <List>
+                    {/* {fightHistory.map((fight: Fight) => {
                                 const fightResult = fight.fighter1 === fencer.name ? fight.resultForFighter1 : fight.resultForFighter2;
                                 return (
                                     <ListItem>
@@ -48,20 +81,6 @@ class FencerPart extends React.Component<any> {
                             })} */}
                             TBA
                         </List>
-                    </CardContent>
-                </Card>
-                <Card raised>
-                    <CardContent>
-                        <Typography variant="h5" component="h3">
-                            Last 10 tournaments
-                        </Typography>
-                        <List>
-                            {events.map((event: any) => (
-                                <ListItem>{event.name} | Record: {event.wins}-{event.losses}-{event.draws}</ListItem>
-                            ))}
-                        </List>
-                    </CardContent>
-                </Card>
             </div>
         );
     }

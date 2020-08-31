@@ -36,23 +36,26 @@ function Line(props: any) {
     }
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={5} container justify="flex-end">
-                <Box bgcolor={leftBgColor} color={textcolor}>
+        <Grid container spacing={2} style={{
+            margin: 0,
+            width: '100%',
+        }}>
+            <Grid item xs={4} md={5} container justify="flex-end">
+                <Box bgcolor={leftBgColor} color={textcolor} padding={1}>
                     <Typography variant="h5">
                         {leftLink}
                     </Typography>
                 </Box>
             </Grid>
-            <Grid item xs={2}>
-                <Box bgcolor="info.main" color="info.contrastText">
+            <Grid item xs={4} md={2}>
+                <Box bgcolor="info.main" color="info.contrastText" padding={1}>
                     <Typography variant="h5">
                         {props.label}
                     </Typography>
                 </Box>
             </Grid>
-            <Grid item xs={5} container justify="flex-start">
-                <Box bgcolor={rightBgColor} color={textcolor}>
+            <Grid item xs={4} md={5} container justify="flex-start">
+                <Box bgcolor={rightBgColor} color={textcolor} padding={1}>
                     <Typography variant="h5">
                         {rightLink}
                     </Typography>
@@ -66,18 +69,21 @@ function HeaderLine(props: any) {
     const otherUrl: string = "https://hemaratings.com/fighters/details/" + props.right.userid;
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={5} container justify="flex-end">
+        <Grid container spacing={2} style={{
+            margin: 0,
+            width: '100%',
+        }}>
+            <Grid item xs={4} md={5} container justify="flex-end">
                 <Typography variant="h3">
                     <Link href={fencerUrl} target="_blank" rel="noopener">{props.left.name}</Link>
                 </Typography>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={4} md={2}>
                 <Box bgcolor="info.main" color="info.contrastText">
                     <Typography variant="h3">VS</Typography>
                 </Box>
             </Grid>
-            <Grid item xs={5} container justify="flex-start">
+            <Grid item xs={4} md={5} container justify="flex-start">
                 <Typography variant="h3">
                     <Link href={otherUrl} target="_blank" rel="noopener">{props.right.name}</Link>
                 </Typography>
@@ -86,11 +92,17 @@ function HeaderLine(props: any) {
     )
 }
 class Comparison extends React.Component<any> {
-    constructor(props: any) {
-        super(props);
-    }
     state = {
         showHighlight: true
+    }
+    constructor(props: any) {
+        super(props);
+
+    }
+    componentWillReceiveProps(nextProps: any) {
+        if (nextProps.showHighlight !== this.props.showHighlight) {
+            this.setState({ showHighlight: nextProps.showHighlight })
+        }
     }
 
     recordString(fencer: Fencer): string {

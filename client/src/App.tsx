@@ -6,7 +6,7 @@ import FencerPart from './FencerPart'
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Comparison from './Comparison'
-import { Button, Toolbar, TextField } from '@material-ui/core';
+import { Button, Toolbar, TextField, Switch, FormControlLabel } from '@material-ui/core';
 import { Fencer } from './types';
 
 const styles = {
@@ -27,7 +27,8 @@ class App extends React.Component<any> {
     fighter1: {},
     fighter2: {},
     fighter1Name: "Dennis Ljungqvist",
-    fighter2Name: "Kristian Ruokonen"
+    fighter2Name: "Kristian Ruokonen",
+    highlightAdvantage: true
   }
 
   componentDidMount() {
@@ -101,12 +102,25 @@ class App extends React.Component<any> {
             <Typography variant="h4" gutterBottom>
               HEMA Longsword Tournament Dashboard
             </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.highlightAdvantage}
+                  onChange={(e: any) => this.setState({ highlightAdvantage: e.target ? e.target.checked : false })}
+                  name="checkedB"
+                  color="secondary"
+                />
+              }
+              label="Highlight advantage"
+            />
+            <Button>About</Button>
           </Toolbar>
         </AppBar>
-        <Grid container spacing={2}>
-          <Grid item xs={2}>
+
+        <Grid container>
+          <Grid item xs={false} md={2}>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={4} md={3}>
             ID belongs to {this.state.fighter1Name}
             <TextField
               label="First fencer ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" defaultValue="10"
@@ -119,10 +133,10 @@ class App extends React.Component<any> {
               }}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={12} sm={4} md={2}>
             <Button variant="contained" color="secondary" onClick={this.startSearch}>Search</Button>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={4} md={3}>
             ID belongs to {this.state.fighter2Name}
             <TextField
               label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" defaultValue="1314"
@@ -132,17 +146,20 @@ class App extends React.Component<any> {
                 this.refreshFighterName(event.target.value, false)
               }} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={false} md={2}>
           </Grid>
         </Grid>
 
-        <Comparison fencer={this.state.fighter1} otherFencer={this.state.fighter2} />
+        <Comparison fencer={this.state.fighter1} otherFencer={this.state.fighter2} showHighlight={this.state.highlightAdvantage} />
 
-        <Grid container className={classes.root} spacing={5}>
-          <Grid item xs={6}>
+        <Grid container spacing={1} style={{
+          margin: 0,
+          width: '100%',
+        }}>
+          <Grid item xs={12} sm={6}>
             <FencerPart fencer={this.state.fighter1} otherFencer={this.state.fighter2} isLeft />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <FencerPart fencer={this.state.fighter2} otherFencer={this.state.fighter1} isRight />
           </Grid>
         </Grid>
