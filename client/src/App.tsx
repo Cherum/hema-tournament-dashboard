@@ -6,7 +6,7 @@ import FencerPart from './FencerPart'
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Comparison from './Comparison'
-import { Button, Toolbar, TextField, Switch, FormControlLabel, CircularProgress } from '@material-ui/core';
+import { Button, Toolbar, TextField, CircularProgress } from '@material-ui/core';
 import { Fencer } from './types';
 
 const styles = {
@@ -27,7 +27,6 @@ class App extends React.Component<any> {
     fighter2: {},
     fighter1Name: "Dennis Ljungqvist",
     fighter2Name: "Kristian Ruokonen",
-    highlightAdvantage: true,
     fighter1Error: "",
     fighter2Error: "",
     fighter1Loading: false,
@@ -57,12 +56,14 @@ class App extends React.Component<any> {
         this.setState({
           fighter1Error: errorMessage + fighterId,
           fighter1: {},
+          fighter1Name: "",
           fighter1Loading: false
         })
       } else {
         this.setState({
           fighter2Error: errorMessage + fighterId,
           fighter2: {},
+          fighter1Name: "",
           fighter2Loading: false
         })
       }
@@ -170,20 +171,9 @@ class App extends React.Component<any> {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h4" className={classes.title} align="left">
-              HEMA Longsword Tournament Dashboard
+              HEMA Tournament Dashboard
             </Typography>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={this.state.highlightAdvantage}
-                  onChange={(e: any) => this.setState({ highlightAdvantage: e.target ? e.target.checked : false })}
-                  name="checkedB"
-                  color="secondary"
-                />
-              }
-              label="Highlight advantage"
-            />
-            <Button>About</Button>
+            <Button color="inherit">About</Button>
           </Toolbar>
         </AppBar>
 
@@ -194,7 +184,7 @@ class App extends React.Component<any> {
           <Grid item xs={12} sm={4} md={3}>
             ID belongs to {this.state.fighter1Name}
             <TextField
-              label="First fencer ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" defaultValue="10"
+              label="Fencer HEMA Ratings ID" variant="filled" type="number" placeholder="e.g. 10 for Dennis Ljungqvist" defaultValue="10"
               required autoFocus fullWidth
               onChange={(event: any) => {
                 this.setState({
@@ -209,9 +199,9 @@ class App extends React.Component<any> {
           <Grid item xs={12} sm={4} md={2}>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
-            ID belongs to {this.state.fighter2Name} {this.state.fighter2Error}
+            ID belongs to {this.state.fighter2Name}
             <TextField
-              label="Second fencer ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" defaultValue="1314"
+              label="Fencer HEMA Ratings ID" variant="filled" type="number" placeholder="e.g. 1314 for Martin Fabian" defaultValue="1314"
               required fullWidth
               onChange={(event: any) => {
                 this.setState({
@@ -228,7 +218,7 @@ class App extends React.Component<any> {
           </Grid>
         </Grid>
 
-        <Comparison fencer={this.state.fighter1} otherFencer={this.state.fighter2} showHighlight={this.state.highlightAdvantage} />
+        <Comparison fencer={this.state.fighter1} otherFencer={this.state.fighter2} />
 
         <Grid container spacing={1} style={{
           margin: 0,
