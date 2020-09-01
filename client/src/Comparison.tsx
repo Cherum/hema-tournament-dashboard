@@ -42,7 +42,9 @@ function Line(props: any) {
             </Typography>
         </Link>;
     } else {
-        rightLink = props.right;
+        rightLink = <Typography variant="h6" component="div">
+            {props.right}
+        </Typography>;
     }
 
     return (
