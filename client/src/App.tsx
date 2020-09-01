@@ -6,7 +6,7 @@ import FencerPart from './FencerPart'
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Comparison from './Comparison'
-import { Button, Toolbar, TextField, Switch, FormControlLabel } from '@material-ui/core';
+import { Button, Toolbar, TextField, Switch, FormControlLabel, CircularProgress } from '@material-ui/core';
 import { Fencer } from './types';
 
 const styles = {
@@ -29,7 +29,9 @@ class App extends React.Component<any> {
     fighter2Name: "Kristian Ruokonen",
     highlightAdvantage: true,
     fighter1Error: "",
-    fighter2Error: ""
+    fighter2Error: "",
+    fighter1Loading: false,
+    fighter2Loading: false
   }
 
   componentDidMount() {
@@ -37,16 +39,31 @@ class App extends React.Component<any> {
   }
 
   refreshFighterName = async (fighterId: number, isFighter1: boolean) => {
+    if (isFighter1) {
+      this.setState({
+        fighter1Loading: true
+      })
+    } else {
+      this.setState({
+        fighter2Loading: true
+      })
+    }
+
     const response = await fetch('/fightername/' + fighterId);
     const body = await response.json();
     if (response.status !== 200) {
+      const errorMessage: string = "Couldn't find fencer with id ";
       if (isFighter1) {
         this.setState({
-          fighter1Error: "Couldn't find fencer with id " + fighterId
+          fighter1Error: errorMessage + fighterId,
+          fighter1: {},
+          fighter1Loading: false
         })
       } else {
         this.setState({
-          fighter2Error: "Couldn't find fencer with id " + fighterId
+          fighter2Error: errorMessage + fighterId,
+          fighter2: {},
+          fighter2Loading: false
         })
       }
       return;
@@ -55,13 +72,17 @@ class App extends React.Component<any> {
     if (isFighter1) {
       this.setState({
         fighter1Name: body,
+        fighter1: {},
         fighter1Error: ""
       })
+      this.loadFighter1(this.state.fighter1Id, this.state.fighter2Name)
     } else {
       this.setState({
         fighter2Name: body,
+        fighter2: {},
         fighter2Error: ""
       })
+      this.loadFighter2(this.state.fighter2Id, this.state.fighter1Name)
     }
   }
 
@@ -75,6 +96,7 @@ class App extends React.Component<any> {
 
     return body;
   };
+
   convertResultToFencer(res: any): Fencer {
     const fighter: Fencer = {
       name: res.name,
@@ -92,37 +114,57 @@ class App extends React.Component<any> {
     }
     return fighter;
   }
-  refreshNames() {
-    console.log("load user")
-    this.fetchUsers(this.state.fighter1Id, this.state.fighter2Name)
-      .then(res => {
-        this.setState({
-          fighter1: this.convertResultToFencer(res)
-        })
-      })
-      .catch(err => {
-        console.warn(err);
-        this.setState({
-          fighter1: {}
-        })
-      });
 
-    this.fetchUsers(this.state.fighter2Id, this.state.fighter1Name)
+  loadFighter1(fighterId: number, opponentName: string): void {
+    this.fetchUsers(fighterId, opponentName)
       .then(res => {
         this.setState({
-          fighter2: this.convertResultToFencer(res)
+          fighter1: this.convertResultToFencer(res),
+          fighter1Loading: false
         })
       })
       .catch(err => {
         console.warn(err);
         this.setState({
-          fighter2: {}
+          fighter1: {},
+          fighter1Loading: false
         })
       });
+  }
+  loadFighter2(fighterId: number, opponentName: string): void {
+    this.fetchUsers(fighterId, opponentName)
+      .then(res => {
+        this.setState({
+          fighter2: this.convertResultToFencer(res),
+          fighter2Loading: false
+        })
+      })
+      .catch(err => {
+        console.warn(err);
+        this.setState({
+          fighter2: {},
+          fighter2Loading: false
+        })
+      });
+  }
+  refreshNames() {
+    this.loadFighter1(this.state.fighter1Id, this.state.fighter2Name)
+    this.loadFighter2(this.state.fighter2Id, this.state.fighter1Name)
   }
 
   render() {
     const { classes } = this.props;
+
+    let fighter1Busy: any;
+    if (this.state.fighter1Loading) {
+      fighter1Busy = <CircularProgress />
+    }
+
+    let fighter2Busy: any;
+    if (this.state.fighter2Loading) {
+      fighter2Busy = <CircularProgress />
+    }
+
     return (
       <div className="App">
         <AppBar position="static">
@@ -147,6 +189,7 @@ class App extends React.Component<any> {
 
         <Grid container>
           <Grid item xs={false} md={2}>
+            {fighter1Busy}
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
             ID belongs to {this.state.fighter1Name}
@@ -158,7 +201,6 @@ class App extends React.Component<any> {
                   fighter1Id: event.target.value
                 });
                 this.refreshFighterName(event.target.value, true)
-                this.refreshNames();
               }}
               error={this.state.fighter1Error !== ""}
               helperText={this.state.fighter1Error}
@@ -176,13 +218,13 @@ class App extends React.Component<any> {
                   fighter2Id: event.target.value
                 });
                 this.refreshFighterName(event.target.value, false)
-                this.refreshNames();
               }}
               error={this.state.fighter2Error !== ""}
               helperText={this.state.fighter2Error}
             />
           </Grid>
           <Grid item xs={false} md={2}>
+            {fighter2Busy}
           </Grid>
         </Grid>
 

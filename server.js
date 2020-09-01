@@ -13,7 +13,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const rp = require('request-promise');
 const $ = require('cheerio');
-const { count } = require('console');
 
 app.get('/fightername/:fighter', (req, res) => {
   const fighterId = req.params.fighter
