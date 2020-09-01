@@ -1,8 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Fencer } from './types'
-import List from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
@@ -11,13 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Paper from '@material-ui/core/Paper';
-
-const styles = {
-    root: {
-        minWidth: 275,
-        maxWidth: 500
-    }
-};
 
 class FencerPart extends React.Component<any> {
 
@@ -62,24 +53,8 @@ class FencerPart extends React.Component<any> {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Typography variant="h5" component="h3">
-                    Previous fights
-                        </Typography>
-                <List>
-                    {/* {fightHistory.map((fight: Fight) => {
-                                const fightResult = fight.fighter1 === fencer.name ? fight.resultForFighter1 : fight.resultForFighter2;
-                                return (
-                                    <ListItem>
-                                        <Typography color={fightResult === FightResult.Win ? "primary" : "error"}>
-                                            {fight.eventName} {fightResult}
-                                        </Typography>
-                                    </ListItem>
-                                )
-                            })} */}
-                            TBA
-                        </List>
             </div>
         );
     }
 }
-export default withStyles(styles)(FencerPart);
+export default FencerPart;

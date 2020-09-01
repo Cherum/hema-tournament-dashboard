@@ -23,14 +23,24 @@ function Line(props: any) {
 
     let leftLink
     if (props.leftLink) {
-        leftLink = <Link href={props.leftLink} target="_blank" rel="noopener">{props.left}</Link>;
+        leftLink = <Link href={props.leftLink} target="_blank" rel="noopener">
+            <Typography variant="h6" component="div">
+                {props.left}
+            </Typography>
+        </Link>;
     } else {
-        leftLink = props.left;
+        leftLink = <Typography variant="h6" component="div">
+            {props.left}
+        </Typography>;
     }
 
     let rightLink
     if (props.rightLink) {
-        rightLink = <Link href={props.rightLink} target="_blank" rel="noopener">{props.right}</Link>;
+        rightLink = <Link href={props.rightLink} target="_blank" rel="noopener">
+            <Typography variant="h6" component="div">
+                {props.right}
+            </Typography>
+        </Link>;
     } else {
         rightLink = props.right;
     }
@@ -42,26 +52,22 @@ function Line(props: any) {
         }}>
             <Grid item xs={4} md={5} container justify="flex-end">
                 <Box bgcolor={leftBgColor} color={textcolor} padding={1}>
-                    <Typography variant="h6" component="body">
-                        {leftLink}
-                    </Typography>
+                    {leftLink}
                 </Box>
             </Grid>
             <Grid item xs={4} md={2}>
                 <Box bgcolor="info.main" color="info.contrastText" padding={1}>
-                    <Typography variant="h6" component="body">
+                    <Typography variant="h6" component="div">
                         {props.label}
                     </Typography>
                 </Box>
             </Grid>
             <Grid item xs={4} md={5} container justify="flex-start">
                 <Box bgcolor={rightBgColor} color={textcolor} padding={1}>
-                    <Typography variant="h6" component="body">
-                        {rightLink}
-                    </Typography>
+                    {rightLink}
                 </Box>
             </Grid>
-        </Grid>
+        </Grid >
     )
 }
 function HeaderLine(props: any) {
@@ -74,19 +80,23 @@ function HeaderLine(props: any) {
             width: '100%',
         }}>
             <Grid item xs={4} md={5} container justify="flex-end">
-                <Typography variant="h4" component="h2">
-                    <Link href={fencerUrl} target="_blank" rel="noopener">{props.left.name}</Link>
-                </Typography>
+                <Link href={fencerUrl} target="_blank" rel="noopener">
+                    <Typography variant="h4" component="h2">
+                        {props.left.name}
+                    </Typography>
+                </Link>
             </Grid>
             <Grid item xs={4} md={2}>
                 <Box bgcolor="info.main" color="info.contrastText">
-                    <Typography variant="h4" component="body">VS</Typography>
+                    <Typography variant="h4" component="div">VS</Typography>
                 </Box>
             </Grid>
             <Grid item xs={4} md={5} container justify="flex-start">
-                <Typography variant="h4" component="h2">
-                    <Link href={otherUrl} target="_blank" rel="noopener">{props.right.name}</Link>
-                </Typography>
+                <Link href={otherUrl} target="_blank" rel="noopener">
+                    <Typography variant="h4" component="h2">
+                        {props.right.name}
+                    </Typography>
+                </Link>
             </Grid>
         </Grid>
     )
