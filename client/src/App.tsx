@@ -20,10 +20,6 @@ const styles = {
 };
 
 class App extends React.Component<any> {
-  constructor(props: any) {
-    super(props);
-    this.startSearch = this.startSearch.bind(this);
-  }
   state = {
     fighter1Id: 10,
     fighter2Id: 5,
@@ -124,10 +120,6 @@ class App extends React.Component<any> {
         })
       });
   }
-  startSearch(e: any): void {
-    e.preventDefault();
-    this.refreshNames();
-  }
 
   render() {
     const { classes } = this.props;
@@ -173,7 +165,6 @@ class App extends React.Component<any> {
             />
           </Grid>
           <Grid item xs={12} sm={4} md={2}>
-            <Button variant="contained" color="secondary" onClick={this.startSearch}>Search</Button>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
             ID belongs to {this.state.fighter2Name} {this.state.fighter2Error}
