@@ -16,6 +16,9 @@ const styles = {
   },
   title: {
     flexGrow: 1,
+  },
+  toolbar: {
+    background: "#2196f3"
   }
 };
 
@@ -169,7 +172,7 @@ class App extends React.Component<any> {
 
     return (
       <div className="App">
-        <AppBar position="static">
+        <AppBar position="static" className={classes.toolbar}>
           <Toolbar>
             <Typography variant="h4" className={classes.title} align="left">
               HEMA Tournament Dashboard
