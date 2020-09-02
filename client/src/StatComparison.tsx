@@ -15,11 +15,11 @@ function Line(props: any) {
     const isLeftBetter: boolean = props.betterSide === BetterSide.Left;
     const isRightBetter: boolean = props.betterSide === BetterSide.Right;
 
-    const doHighlight: boolean = !props.highlight || props.betterSide === BetterSide.Equal;
-    const leftBgColor: string = doHighlight ? "inherit" : isLeftBetter ? "green" : "red";
-    const rightBgColor: string = doHighlight ? "inherit" : isRightBetter ? "green" : "red";
+    const noHighlight: boolean = !props.highlight || props.betterSide === BetterSide.Equal;
+    const leftBgColor: string = noHighlight ? "inherit" : isLeftBetter ? "green" : "red";
+    const rightBgColor: string = noHighlight ? "inherit" : isRightBetter ? "green" : "red";
 
-    const textcolor: string = doHighlight ? "inherit" : "info.contrastText";
+    const textcolor: string = noHighlight ? "inherit" : "info.contrastText";
 
     let leftLink
     if (props.leftLink) {
@@ -104,15 +104,6 @@ function HeaderLine(props: any) {
     )
 }
 class Comparison extends React.Component<any> {
-    state = {
-        showHighlight: true
-    }
-    componentWillReceiveProps(nextProps: any) {
-        if (nextProps.showHighlight !== this.props.showHighlight) {
-            this.setState({ showHighlight: nextProps.showHighlight })
-        }
-    }
-
     recordString(fencer: Fencer): string {
         return fencer.wins + "-" + fencer.losses + "-" + fencer.draws
     }
@@ -197,28 +188,28 @@ class Comparison extends React.Component<any> {
                 <Line label="Win ratio"
                     left={this.winLossRatio(fencer) + " : 1"}
                     right={this.winLossRatio(other) + " : 1"}
-                    highlight={this.state.showHighlight}
+                    highlight
                     betterSide={this.hasBetterWinRatio(fencer, other)}
                 />
 
                 <Line label="Rank"
                     left={fencer.rank}
                     right={other.rank}
-                    highlight={this.state.showHighlight}
+                    highlight
                     betterSide={this.hasBetterRank(fencer, other)}
                 />
 
                 <Line label="Rating"
                     left={fencer.rating}
                     right={other.rating}
-                    highlight={this.state.showHighlight}
+                    highlight
                     betterSide={this.hasBetterRating(fencer, other)}
                 />
 
                 <Line label="Past fights"
                     left={this.fencerPastRecord(fencer)}
                     right={this.fencerPastRecord(other)}
-                    highlight={this.state.showHighlight}
+                    highlight
                     betterSide={this.hasBetterOpponentStatistic(fencer)}
                 />
             </div >
