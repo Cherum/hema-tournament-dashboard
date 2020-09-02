@@ -29,7 +29,7 @@ class FencerPart extends React.Component<any> {
         return (
             <div>
                 <Typography variant="h5" component="h3" gutterBottom>
-                    {this.props.fencer.name} tournament history
+                    {this.props.fencer.name} longsword history
                 </Typography>
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
