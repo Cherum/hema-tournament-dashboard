@@ -45,7 +45,9 @@ class FencerPart extends React.Component<any> {
                                     <TableCell>{event.name}</TableCell>
                                     <TableCell align="right">
                                         <Box bgcolor={event.wins > event.losses ? winBgColor : lossBgColor} color="info.contrastText" padding={1}>
-                                            {event.wins}-{event.losses}-{event.draws}
+                                            <Typography noWrap>
+                                                {event.wins}-{event.losses}-{event.draws}
+                                            </Typography>
                                         </Box>
                                     </TableCell>
                                 </TableRow>
